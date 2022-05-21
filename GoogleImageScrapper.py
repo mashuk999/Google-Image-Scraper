@@ -21,7 +21,7 @@ import io
 from PIL import Image
 
 #custom patch libraries
-import patch 
+# import patch 
 
 class GoogleImageScraper():
     def __init__(self,webdriver_path,image_path, search_key="cat",number_of_images=1,headless=False,min_resolution=(0,0),max_resolution=(1920,1080)):
@@ -37,23 +37,35 @@ class GoogleImageScraper():
         while(True):
             try:
                 #try going to www.google.com
-                options = Options()
-                if(headless):
-                    options.add_argument('--headless')
-                driver = webdriver.Chrome(webdriver_path, chrome_options=options)
-                driver.set_window_size(1400,1050)
-                driver.get("https://www.google.com")
+                import sys
+                sys.path.insert(0,'/usr/lib/chromium-browser/chromedriver')
+                from selenium import webdriver
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.add_argument('--headless')
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+                driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+                driver.get("https://www.webite-url.com")
+              # options = Options()
+              # if(headless):
+              #     options.add_argument('--headless')
+              # driver = webdriver.Chrome(webdriver_path, chrome_options=options)
+              # driver.set_window_size(1400,1050)
+              # driver.get("https://www.google.com")
                 break
             except:
                 #patch chromedriver if not available or outdated
                 try:
                     driver
                 except NameError:
-                    is_patched = patch.download_lastest_chromedriver()
+                    print("Selenium config issue")
+                    pass
+                    # is_patched = patch.download_lastest_chromedriver()
                 else:
-                    is_patched = patch.download_lastest_chromedriver(driver.capabilities['version'])
-                if (not is_patched): 
-                    exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
+                    pass
+                    # is_patched = patch.download_lastest_chromedriver(driver.capabilities['version'])
+                # if (not is_patched): 
+                #     exit("[ERR] Please update the chromedriver.exe in the webdriver folder according to your chrome version:https://chromedriver.chromium.org/downloads")
                     
         self.driver = driver
         self.search_key = search_key
